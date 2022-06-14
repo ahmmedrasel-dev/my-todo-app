@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../firebase.init';
@@ -14,6 +14,11 @@ const Login = () => {
     hookError,
   ] = useSignInWithEmailAndPassword(auth);
 
+  let navigate = useNavigate();
+  let location = useLocation();
+
+  let from = location.state?.from?.pathname || "/";
+
   // Sign In with Email And Password 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -23,6 +28,17 @@ const Login = () => {
       toast.error('Email & Password is empaty.')
     }
   }
+
+  if (user) {
+    navigate(from, { replace: true });
+    toast.success('User Login Successfullay');
+  }
+
+  useEffect(() => {
+    if (hookError) {
+      toast.error(hookError.message)
+    }
+  }, [hookError])
 
 
   return (
@@ -37,9 +53,8 @@ const Login = () => {
           <input className='block w-full p-3 rounded-md text-xl' type="email" placeholder='Email' onChange={(e) => setEmail(e.target.value)} />
           <input className='block w-full p-3 my-4 rounded-md text-xl' type="current-password" placeholder='Password' onBlur={(e) => setPassword(e.target.value)} />
           <button className='w-full bg-sky-500 p-3 mb-4 rounded-md text-xl text-white'>Login</button>
-          <p className='text-center mb-2'> <Link className='underline text-blue-400' to='/reset-password'>Forget Password?</Link></p>
 
-          <p className='text-center mb-2'>Don't have Account? <Link className='underline text-blue-400' to='/register'>Create an account.</Link></p>
+          <p className='text-center mb-4'>Don't have Account? <Link className='underline text-blue-400' to='/register'>Create an account.</Link></p>
 
         </form>
       </div>

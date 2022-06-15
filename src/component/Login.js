@@ -51,7 +51,7 @@ const Login = () => {
 
         <form className='sm:w-4/4 md:w-3/4 mx-auto mt-4' onSubmit={handleSubmit}>
           <input className='block w-full p-3 rounded-md text-xl' type="email" placeholder='Email' onChange={(e) => setEmail(e.target.value)} />
-          <input className='block w-full p-3 my-4 rounded-md text-xl' type="current-password" placeholder='Password' onBlur={(e) => setPassword(e.target.value)} />
+          <input className='block w-full p-3 my-4 rounded-md text-xl' type="password" placeholder='Password' onBlur={(e) => setPassword(e.target.value)} />
           <button className='w-full bg-sky-500 p-3 mb-4 rounded-md text-xl text-white'>Login</button>
 
           <p className='text-center mb-4'>Don't have Account? <Link className='underline text-blue-400' to='/register'>Create an account.</Link></p>

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const TaskList = ({ task, refetch }) => {
@@ -9,7 +9,7 @@ const TaskList = ({ task, refetch }) => {
   const navigate = useNavigate();
 
   const handleNavigateDetails = (id) => {
-    navigate(`task/${id}`);
+    navigate(`/task/${id}`);
   }
   const handleComplet = (id) => {
     const updateStatus = async () => {
@@ -35,8 +35,7 @@ const TaskList = ({ task, refetch }) => {
         </div>
       </td>
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-        <Link to="" onClick={() => handleNavigateDetails(_id)}>{title}</Link>
-
+        <p onClick={() => handleNavigateDetails(_id)}>{title}</p>
       </th>
       <td className="px-6 py-4">
         {description}

@@ -1,38 +1,41 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const TaskDetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const [task, setTask] = useState({});
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await axios.get(`http://localhost:5000/task/:${id}`);
-      setTask(data);
+  const { data: task, isLoading, refetch } = useQuery('task',
+    async () => {
+      try {
+        const { data } = await axios.get(`https://my-todo-app-express.herokuapp.com/task/${id}`);
+        return data;
+      }
+      catch (error) {
+        console.log(error.message)
+      }
     }
-    getData()
-  }, []);
+  )
 
   const handleForm = event => {
     event.preventDefault();
-    const title = event.target.name.value;
-    const description = event.target.name.value;
+    const title = event.target.title.value;
+    const description = event.target.description.value;
 
     const updateTask = { title, description };
     try {
       const postData = async () => {
-        const { data } = await axios.put('https://my-todo-app-express.herokuapp.com/add-task',);
-        if (!data.success) {
-          return toast.error(data.error)
+        const { data } = await axios.put(`https://my-todo-app-express.herokuapp.com/task/${id}`, updateTask);
+        if (data.modifiedCount > 0) {
+          toast.success('Update Task!')
+          event.target.reset();
+          refetch()
         }
-        event.target.reset();
 
-        navigate('/')
-        toast.success(data.message)
       }
       postData()
     }
@@ -45,7 +48,8 @@ const TaskDetails = () => {
     <div className='max-w-7xl mx-auto'>
       <div className='max-w-xl mx-auto h-screen flex items-center'>
         <form className='w-full  bg-slate-300 p-8 rounded-md' onSubmit={handleForm}>
-          <h1 className='text-center my-6 text-xl'>Add New Task</h1>
+          <Link to="/">Back Home</Link>
+          <h1 className='text-center my-6 text-xl'>Edit Task</h1>
           <div className="mb-6">
             <label htmlFor="base-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Task Title</label>
             <input type="text" id="base-input" name='title' className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />

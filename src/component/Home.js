@@ -1,17 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from './Navbar';
 import TaskList from './TaskList';
 
 const Home = () => {
-  const navigate = useNavigate()
   const { data: task, isLoading, refetch } = useQuery('task',
     async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/task');
+        const { data } = await axios.get('https://my-todo-app-express.herokuapp.com/task');
         return data;
       }
       catch (error) {
@@ -20,19 +18,17 @@ const Home = () => {
     }
   )
 
-  // const [searchResult, setSearchResult] = useState(task)
+  const [searchResult, setSearchResult] = useState(task)
 
-  // const searchKeyword = event => {
-  //   const searchText = event.target.value;
-  //   const match = task.filter(result => result.title.toLowerCase().includes(searchText));
-  //   setSearchResult(match);
-  // }
-
-
+  const searchKeyword = event => {
+    const searchText = event.target.value;
+    const match = task.filter(result => result.title.toLowerCase().includes(searchText));
+    setSearchResult(match);
+  }
 
   const handleRemove = () => {
     const deleteTask = async () => {
-      const response = await axios.delete(`http://localhost:5000/task`);
+      const response = await axios.delete(`https://my-todo-app-express.herokuapp.com/task`);
       if (response.data.deletedCount > 0) {
         toast.success(`Task is Deleted!`)
         refetch()
@@ -43,6 +39,7 @@ const Home = () => {
     }
     deleteTask()
   }
+
 
   if (isLoading) {
     return 'Loading...'

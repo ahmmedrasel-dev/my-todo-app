@@ -1,13 +1,62 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Navbar from './Navbar';
+import TaskList from './TaskList';
 
 const Home = () => {
+
+  const navigate = useNavigate()
+  const { data: task, isLoading, refetch } = useQuery('task',
+    async () => {
+      try {
+        const { data } = await axios.get('http://localhost:5000/task');
+        return data;
+      }
+      catch (error) {
+        toast.error(error.message)
+      }
+    }
+  )
+
+  const [searchResult, setSearchResult] = useState(task)
+
+  const searchKeyword = event => {
+    const searchText = event.target.value;
+    const match = task.filter(result => result.title.toLowerCase().includes(searchText));
+    setSearchResult(match);
+  }
+
+
+  const handleRemove = () => {
+    const deleteTask = async () => {
+      const response = await axios.delete(`http://localhost:5000/task`);
+      if (response.data.deletedCount > 0) {
+        toast.success(`Task is Deleted!`)
+        navigate('/')
+        refetch()
+      } else {
+        navigate('/')
+        refetch()
+        toast.error(`Somethin is Wrong!`)
+      }
+    }
+    deleteTask()
+  }
+
+  if (isLoading) {
+    return 'Loading...'
+  }
+
   return (
     <div className='max-w-7xl mx-auto mt-8'>
       <div className="shadow-md sm:rounded-lg">
-
-        <Navbar></Navbar>
-
+        <Navbar
+          handleRemove={handleRemove}
+          searchKeyword={searchKeyword}
+        ></Navbar>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -34,26 +83,14 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <td className="w-4 p-4">
-                <div className="flex items-center">
-                  <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                  <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                </div>
-              </td>
-              <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                Apple MacBook Pro 17"
-              </th>
-              <td className="px-6 py-4">
-                Sliver
-              </td>
-              <td className="px-6 py-4">
-                Laptop
-              </td>
-              <td className="px-6 py-4 text-right">
-                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-            </tr>
+            {
+              searchResult.map(item => <TaskList
+                key={item._id}
+                task={item}
+                refetch={refetch}
+              ></TaskList>)
+            }
+
           </tbody>
         </table>
       </div>

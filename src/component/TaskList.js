@@ -1,15 +1,20 @@
 import axios from 'axios';
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const TaskList = ({ task, refetch }) => {
   const { title, description, _id } = task;
-  // const { chacked, setChacked } = useState(false)
 
+  const navigate = useNavigate();
+
+  const handleNavigateDetails = (id) => {
+    navigate(`task/${id}`);
+  }
   const handleComplet = (id) => {
     const updateStatus = async () => {
       try {
-        const { data } = await axios.put(`http://localhost:5000/taskStatus/${id}`);
+        const { data } = await axios.put(`https://my-todo-app-express.herokuapp.com/taskStatus/${id}`);
         if (data.modifiedCount > 0) {
           toast.success('Task is Completed!')
           refetch()
@@ -30,7 +35,8 @@ const TaskList = ({ task, refetch }) => {
         </div>
       </td>
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-        {title}
+        <Link to="" onClick={() => handleNavigateDetails(_id)}>{title}</Link>
+
       </th>
       <td className="px-6 py-4">
         {description}

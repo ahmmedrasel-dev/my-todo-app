@@ -24,7 +24,7 @@ const AddTask = () => {
 
     try {
       const postData = async () => {
-        const { data } = await axios.post('http://localhost:5000/add-task', newTask);
+        const { data } = await axios.post('https://my-todo-app-express.herokuapp.com/add-task', newTask);
         if (!data.success) {
           return toast.error(data.error)
         }

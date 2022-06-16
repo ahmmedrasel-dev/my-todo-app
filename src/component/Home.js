@@ -7,7 +7,6 @@ import Navbar from './Navbar';
 import TaskList from './TaskList';
 
 const Home = () => {
-
   const navigate = useNavigate()
   const { data: task, isLoading, refetch } = useQuery('task',
     async () => {
@@ -21,22 +20,14 @@ const Home = () => {
     }
   )
 
-  // const [filterData, setFilterData] = useState();
+  // const [searchResult, setSearchResult] = useState(task)
 
-  const [searchResult, setSearchResult] = useState(task)
+  // const searchKeyword = event => {
+  //   const searchText = event.target.value;
+  //   const match = task.filter(result => result.title.toLowerCase().includes(searchText));
+  //   setSearchResult(match);
+  // }
 
-  const searchKeyword = event => {
-    const searchText = event.target.value;
-    const match = task.filter(result => result.title.toLowerCase().includes(searchText));
-    setSearchResult(match);
-  }
-
-  const filterByStatus = (value) => {
-    console.log(value);
-    const match = task.filter(result => result.status.toLowerCase().includes(value));
-    console.log(match);
-    // setSearchResult(match);
-  }
 
 
   const handleRemove = () => {
@@ -44,10 +35,8 @@ const Home = () => {
       const response = await axios.delete(`http://localhost:5000/task`);
       if (response.data.deletedCount > 0) {
         toast.success(`Task is Deleted!`)
-        navigate('/')
         refetch()
       } else {
-        navigate('/')
         refetch()
         toast.error(`Somethin is Wrong!`)
       }
@@ -64,8 +53,6 @@ const Home = () => {
       <div className="shadow-md sm:rounded-lg">
         <Navbar
           handleRemove={handleRemove}
-          searchKeyword={searchKeyword}
-          filterByStatus={filterByStatus}
         ></Navbar>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -94,7 +81,7 @@ const Home = () => {
           </thead>
           <tbody>
             {
-              searchResult.map(item => <TaskList
+              task.map(item => <TaskList
                 key={item._id}
                 task={item}
                 refetch={refetch}

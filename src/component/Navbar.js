@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import auth from '../firebase.init';
 import { signOut } from 'firebase/auth';
 
-const Navbar = ({ handleRemove, searchKeyword }) => {
+const Navbar = ({ handleRemove, searchKeyword, filterByStatus }) => {
 
 
   const logOut = () => {
@@ -17,13 +17,24 @@ const Navbar = ({ handleRemove, searchKeyword }) => {
         <a href="#" className="flex items-center">
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">My-TodoApp</span>
         </a>
-        <div className="dropdown dropdown-hover flex md:order-3">
-          <label tabIndex="0" className="btn m-1">Action</label>
-          <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-            <li><Link to="/add-task">Add Task</Link></li>
-            <li><Link to="/add-task" onClick={handleRemove}>Remove Completed</Link></li>
-            <li><Link to="/login" onClick={logOut}>Logout</Link></li>
-          </ul>
+        <div className='flex md:order-4'>
+          <div className="dropdown dropdown-end">
+            <label tabIndex="0" className="btn btn-info m-5">Filter By</label>
+            <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="#">All</a></li>
+              <li><a href="#" onClick={() => filterByStatus('active')}>Active Task</a></li>
+              <li><a href="#" onClick={() => filterByStatus('completed')}>Complete</a></li>
+            </ul>
+          </div>
+
+          <div className="dropdown dropdown-end">
+            <label tabIndex="0" className="btn m-5">Action</label>
+            <ul tabIndex="0" className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><Link to="/add-task">Add Task</Link></li>
+              <li><Link to="/add-task" onClick={handleRemove}>Remove Completed</Link></li>
+              <li><Link to="/login" onClick={logOut}>Logout</Link></li>
+            </ul>
+          </div>
         </div>
         <div className="flex md:order-2">
           <button type="button" data-collapse-toggle="mobile-menu-3" aria-controls="mobile-menu-3" aria-expanded="false" className="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1">

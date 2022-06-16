@@ -21,12 +21,21 @@ const Home = () => {
     }
   )
 
+  // const [filterData, setFilterData] = useState();
+
   const [searchResult, setSearchResult] = useState(task)
 
   const searchKeyword = event => {
     const searchText = event.target.value;
     const match = task.filter(result => result.title.toLowerCase().includes(searchText));
     setSearchResult(match);
+  }
+
+  const filterByStatus = (value) => {
+    console.log(value);
+    const match = task.filter(result => result.status.toLowerCase().includes(value));
+    console.log(match);
+    // setSearchResult(match);
   }
 
 
@@ -56,6 +65,7 @@ const Home = () => {
         <Navbar
           handleRemove={handleRemove}
           searchKeyword={searchKeyword}
+          filterByStatus={filterByStatus}
         ></Navbar>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
